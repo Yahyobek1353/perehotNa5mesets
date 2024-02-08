@@ -1,9 +1,16 @@
 package com.salievyt1353.ulanAka.perehotna5mesets.onBoard
 
+
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.salievyt1353.ulanAka.perehotna5mesets.R
@@ -27,36 +34,51 @@ class OnBoardFragment : Fragment() {
 
     private var progress = 0
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding.button.alpha= 0F
-        progress = 1
-        if (progress == 1 ){
-            binding.button.animate().alpha(1f).translationYBy(-50f).startDelay=3000
-        }
+        binding.progressBar.scaleY = 10f
+        binding.progressBar.
+        // Устанавливаем начальное значение прогресса
+        setProgress(progress)
 
-        with(binding){ button.setOnClickListener{
-             if (progress < 33 || progress == 0) {
-                progress = 33
-                verticalProgressbar.progress = progress
-             } else if (progress < 66 || progress == 33) {
-                progress = 66
-                verticalProgressbar.progress = progress
-             } else if (progress < 100 || progress == 66) {
-                progress = 100
-                verticalProgressbar.progress = progress
-             }
-            if (progress == 100){
-                button.setOnClickListener {
-                    findNavController().navigate(R.id.nextFragment)
-                }
+        // Настройка обработчика нажатия на кнопку добавляет 50
+        binding.increaseButton.setOnClickListener {
+            if (progress < 100) {
+                progress +=50
+                setProgress(progress)
             }
 
-
-         }
+            }
+        //минусует 50
+        binding.Button.setOnClickListener {
+            if (progress>0){
+                progress -=50
+                setProgress(progress)
+            }
         }
     }
 
+    @SuppressLint("ResourceAsColor")
+    private fun setProgress(progress: Int) {
+        binding.progressBar.progress = progress
 
+        // Устанавливаем цвет текста в зависимости от значения прогресса
+        when (progress) {
+            0 -> {
+                binding.Button.isEnabled = false
+                binding.Button.setBackgroundColor(R.color.darker_gray)
+            }
+            50 -> {
+                binding.Button.isEnabled = true
+                binding.Button.setBackgroundColor(R.color.black)
+                binding.textView1.setTextColor(R.color.black)}
+
+            100 -> { binding.textView1.setTextColor(R.color.black)
+                binding.textView2.setTextColor(R.color.black)
+                binding.Button.setBackgroundColor(R.color.darker_gray)
+            }
+        }
+    }
 }
